@@ -26,6 +26,9 @@ class TopicDistanceMap:
 		"""
 		Plot an Intertopic Distance Map
 
+		NOTE: You need to pass the gensim Mallet LDA wrapper object.
+		Pass Model.return_model() in lda_mallet argument.
+
 		Arguments
 		---------
 		lda_mallet: gensim wrapper object for Mallet LDA Model  
