@@ -1,0 +1,5 @@
+test/
+build/
+dist/
+sptm.egg-info/
+examples/
