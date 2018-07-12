@@ -9,6 +9,7 @@
 import gensim.corpora as corpora
 import gensim.models.wrappers as Wrappers
 import gensim.utils as utils
+from shutil import copy2
 from gensim.models import CoherenceModel
 import preprocess
 from utils import force_unicode
@@ -142,13 +143,23 @@ class Model:
 
 	def save(self, output_path):
 		"""
-		Save the Mallet lDA model. Also, save the document_topic							TODO
-		distribution
+		Save the Mallet lDA model. Also, save the document_topic
+		distribution, corpus and the inferencer
 
 		Arguments
 		---------
 		output_path: Location with filename to save the LDA model
 		"""
+		doctopic = self.lda_model_mallet.fdoctopics()
+		inferencer = self.lda_model_mallet.finferencer()
+		corpus = self.lda_model_mallet.fcorpusmallet()
+
+		try:
+			copy2(doctopic, output_path + "_doctopic")
+			copy2(inferencer, output_path + "_inferencer")
+			copy2(corpus, output_path + "_corpus")
+		except:
+			print("Could not find either of the following: doctopic/inferencer/corpus")
 		self.lda_model_mallet.save(output_path)
 
 	def get_coherence(self):
