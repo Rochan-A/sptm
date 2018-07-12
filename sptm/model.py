@@ -54,9 +54,10 @@ class Model:
 			with codecs.open(input_path, 'r', encoding='utf8') as F:
 				for row in F:
 					token_in_row = row.split(",")
-					for i in enumerate(token_in_row):
+					for i, val in enumerate(token_in_row):
 						token_in_row[i] = force_unicode(token_in_row[i])
-					self.tokens.append(token_in_row)
+					self.tokens.append(token_in_row[-1])
+			print("Successfully read token file")
 		elif tokens is None and input_path is None:
 			print("Assuming user to load model from saved file, use Model.load()")
 		else:
@@ -78,8 +79,7 @@ class Model:
 		else:
 			print("Tokens not initialized")
 
-	def model_params(self, alpha=50, workers=multiprocessing.cpu_count(), \
-	prefix=None, optimize_interval=0, iterations=1000, topic_threshold=0.0, num_topics=100):
+	def params(self, alpha=50, workers=multiprocessing.cpu_count(), prefix=None, optimize_interval=0, iterations=1000, topic_threshold=0.0, num_topics=100):
 		"""
 		Specify all model parameters
 
@@ -125,7 +125,7 @@ class Model:
 		"""
 		return self.lda_model_mallet
 
-	def print_topics(self, num_topics=100, num_words=10):
+	def topics(self, num_topics=100, num_words=10):
 		"""
 		Print the top <num_words> for <num_topics> topics.
 
@@ -147,13 +147,16 @@ class Model:
 
 		Arguments
 		---------
-		output_path: Location to save the LDA model
+		output_path: Location with filename to save the LDA model
 		"""
-		self.lda_model_mallet.save(output_path + "LDA-Mallet")
+		self.lda_model_mallet.save(output_path)
 
 	def get_coherence(self):
 		"""
 		Compute Coherence Score of the model
+
+		NOTE: You cannot compute the coherence score of a saved model.
+		I am working on it.
 
 		Returns
 		-------
@@ -168,6 +171,9 @@ class Model:
 	def optimum_topic(self, start=10, limit=100, step=11):
 		"""
 		Compute c_v coherence for various number of topics
+
+		NOTE: You cannot compute the coherence score of a saved model.
+		I am working on it.
 
 		Arguments
 		---------
