@@ -1,7 +1,10 @@
 import setuptools
 
 with open("README.md", "r") as fh:
-	L_D = fh.read()
+    L_D = fh.read()
+
+with open('requirements.txt') as f:
+    install_requires = f.read().splitlines()
 
 setuptools.setup(
     name="sptm",
@@ -12,6 +15,7 @@ setuptools.setup(
     long_description=L_D,
     long_description_content_type="text/markdown",
     url="https://github.com/Rochan-A/sptm",
+    install_requires=install_requires,
     packages=setuptools.find_packages(),
     classifiers=(
         "Programming Language :: Python :: 2.7",

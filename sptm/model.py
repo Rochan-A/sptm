@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -58,6 +57,8 @@ class Model:
 					for i in enumerate(token_in_row):
 						token_in_row[i] = force_unicode(token_in_row[i])
 					self.tokens.append(token_in_row)
+		elif tokens is None and input_path is None:
+			print("Assuming user to load model from saved file, use Model.load()")
 		else:
 			print("Missing tokens")
 

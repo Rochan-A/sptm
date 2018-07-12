@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -7,7 +6,7 @@
 
 #######################################
 
-import spacy, re, logging, gensim, io, sys, codecs
+import spacy, re, logging, gensim, io, sys
 from utils import force_unicode
 
 __author__ = "Rochan Avlur Venkat"
@@ -52,7 +51,7 @@ class Corpus:
 			self.raw_review = [x.strip().split(delimiter) for x in raw]
 
 		# Select full review only
-		for i in enumerate(self.raw_review):
+		for i, val in enumerate(self.raw_review):
 			self.raw_review[i] = self.raw_review[i][-1]
 			self.raw_review[i] = re.sub(reg, rep, self.raw_review[i])
 
@@ -70,12 +69,12 @@ class Corpus:
 		"""
 
 		# Iterate over every unique review
-		for i in enumerate(self.raw_review):
+		for i, val in enumerate(self.raw_review):
 			# Split the sentences
 			sentences = self.raw_review[i].split('.')
 
 			# Append the other sentences to the end of the review_buf
-			for j in enumerate(sentences):
+			for j, val in enumerate(sentences):
 				# Make sure the sentence has more than two words
 				if len(sentences[j]) > min_len:
 					self.sentences.append(sentences[j])
@@ -97,7 +96,7 @@ class Corpus:
 
 		# Simple tokens, de-accent and lowercase processor
 		tokens = []
-		for i in enumerate(self.sentences):
+		for i, val in enumerate(self.sentences):
 			tokens.append(gensim.utils.simple_preprocess(self.sentences[i], deacc, min_len, max_len))
 		return tokens
 
@@ -115,17 +114,18 @@ class Corpus:
 		"""
 
 		# POS Tagging and filtering sentences
-		for i in enumerate(self.sentences):
+		for i, val in enumerate(self.sentences):
 			doc = nlp(force_unicode(self.sentences[i]))
-			tok = []
+			to = [unicode(i)]
 			for tok in doc:
 				if tok.is_stop != True and tok.pos_ != 'SYM' and \
 					tok.tag_ != 'PRP' and tok.tag_ != 'PRP$' and \
 					tok.pos_ != 'NUM' and tok.dep_ != 'aux' and \
 					tok.dep_ != 'prep' and tok.dep_ != 'det' and \
 					tok.dep_ != 'cc' and len(tok) != min_len:
-					tok.append(tok.lemma_)
-			self.tokens.append(tok)
+					to.append(tok.lemma_)
+			if len(to) > 1:
+				self.tokens.append(to)
 
 	def write_processed(self, name):
 		"""
@@ -142,5 +142,5 @@ class Corpus:
 
 		# Write the preprocessed reviews to a SINGLE file
 		with io.open(name, "a", encoding='utf8') as outfile:
-			for i in enumerate(self.tokens):
+			for i, val in enumerate(self.tokens):
 				outfile.write(unicode(','.join(self.tokens[i]) + "\n"))
