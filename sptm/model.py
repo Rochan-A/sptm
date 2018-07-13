@@ -48,9 +48,9 @@ class Model:
 		self.tokens = []
 
 		if (tokens is not None and input_path is None) or (tokens is not None and input_path is not None):
-			self.tokens = tokens
+			for i, val in enumerate(tokens):
+				self.tokens.append(tokens[i][-1])
 		elif tokens is None and input_path is not None:
-
 			# Read the saved tokens file
 			with codecs.open(input_path, 'r', encoding='utf8') as F:
 				for row in F:
