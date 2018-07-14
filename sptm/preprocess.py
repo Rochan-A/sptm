@@ -46,7 +46,8 @@ class Corpus:
         raw_review: data read from the file in a list
         sentences: list of lists containing data number and
             sentence
-        tokens: list of lists of review number followed by tokenized sentence
+        tokens: list of lists of data index number followed by tokenized
+            sentence
     """
 
     def __init__(self, path=None, raw_review=None, sentences=None,\
@@ -59,8 +60,8 @@ class Corpus:
         Args:
             path: Path to data file
             raw_review: data in a list
-            sentences: list of lists containing review number and sentences
-            tokens: list of lists of review number followed by tokenized
+            sentences: list of lists containing data index number and sentences
+            tokens: list of lists of data index number followed by tokenized
                 sentence
         """
         self.path = path
@@ -101,9 +102,9 @@ class Corpus:
             raise Exception('Data format in the file does not follow template')
 
     def split_sentence(self, min_len=2):
-        """Split each review into its individual sentences
+        """Split each data index into its individual sentences
 
-        Splits review at periods.
+        Splits data index at periods.
 
         Args:
             min_len: Minimum length of a sentence above which to include

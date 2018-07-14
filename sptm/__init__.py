@@ -3,4 +3,4 @@ from .postprocess import TopicDistanceMap
 from .preprocess import Corpus
 from .utils import force_unicode
 from .conditional import ConditionalMatrix
-name = "sptm"
+from .inference import Inferencer
