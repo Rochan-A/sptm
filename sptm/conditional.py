@@ -42,7 +42,7 @@ class ConditionalMatrix:
     """
 
     def __init__(self, doctopics_path, tokens_path):
-        """Inits ConiditonalMatrix with path to document topic file and tokens
+        """Inits ConditionalMatrix with path to document topic file and tokens
         file
 
         Compute the conditional probability matrix of each sentence
@@ -137,10 +137,10 @@ class ConditionalMatrix:
 
         Args:
             labels_path: Path to a labels file
-        Raise:
+        Raises:
             IOError: Labels file not found
-            Exception: Error matching topics and labels,
-                Error sorting Conditional Probabilities
+            Exception: Error matching topics and labels, Error sorting
+                Conditional Probabilities
         """
 
         self.labels = []
@@ -165,7 +165,8 @@ class ConditionalMatrix:
         self.sorted = []
         try:
             for i in range(self.num_topics):
-                sort_row = sorted(self.labeled[i].items(), key=operator.itemgetter(1))
+                sort_row = sorted(self.labeled[i].items(), \
+                                                    key=operator.itemgetter(1))
                 self.sorted.append(sort_row)
         except Exception:
             raise Exception('Error sorting Conditional Probabilities')

@@ -3,3 +3,4 @@ build/
 dist/
 sptm.egg-info/
 examples/
+*.pyc

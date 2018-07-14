@@ -1,0 +1,819 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sptm package &mdash; sptm 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="sptm 0.1 documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> sptm
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">sptm package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-sptm.conditional">sptm.conditional module</a></li>
+<li><a class="reference internal" href="#module-sptm.inference">sptm.inference module</a></li>
+<li><a class="reference internal" href="#module-sptm.model">sptm.model module</a></li>
+<li><a class="reference internal" href="#module-sptm.postprocess">sptm.postprocess module</a></li>
+<li><a class="reference internal" href="#module-sptm.preprocess">sptm.preprocess module</a></li>
+<li><a class="reference internal" href="#module-sptm.utils">sptm.utils module</a></li>
+<li><a class="reference internal" href="#module-sptm">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sptm</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>sptm package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/source/sptm.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="sptm-package">
+<h1>sptm package<a class="headerlink" href="#sptm-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-sptm.conditional">
+<span id="sptm-conditional-module"></span><h2>sptm.conditional module<a class="headerlink" href="#module-sptm.conditional" title="Permalink to this headline">¶</a></h2>
+<p>Compute conditional probability matrix</p>
+<dl class="class">
+<dt id="sptm.conditional.ConditionalMatrix">
+<em class="property">class </em><code class="descclassname">sptm.conditional.</code><code class="descname">ConditionalMatrix</code><span class="sig-paren">(</span><em>doctopics_path</em>, <em>tokens_path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/conditional.html#ConditionalMatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.conditional.ConditionalMatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the conditional matrix of topics</p>
+<p>From the data used to train the LDA model, make a matrix of topics vs
+topics and compute the conditional probability of topic B occuring after
+topic A. Take this matrix and process it (sort and label it).</p>
+<dl class="attribute">
+<dt id="sptm.conditional.ConditionalMatrix.doc_matrix">
+<code class="descname">doc_matrix</code><a class="headerlink" href="#sptm.conditional.ConditionalMatrix.doc_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output from training the LDA model provided by Mallet.
+Contains the topic probabilities of each sentence.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sptm.conditional.ConditionalMatrix.data_index">
+<code class="descname">data_index</code><a class="headerlink" href="#sptm.conditional.ConditionalMatrix.data_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>list containing the data index number for each sentence.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sptm.conditional.ConditionalMatrix.num_sent">
+<code class="descname">num_sent</code><a class="headerlink" href="#sptm.conditional.ConditionalMatrix.num_sent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of sentences</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sptm.conditional.ConditionalMatrix.num_topics">
+<code class="descname">num_topics</code><a class="headerlink" href="#sptm.conditional.ConditionalMatrix.num_topics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of topics</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sptm.conditional.ConditionalMatrix.topic_freq">
+<code class="descname">topic_freq</code><a class="headerlink" href="#sptm.conditional.ConditionalMatrix.topic_freq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sum of the weights for a topic over the whole dataset</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sptm.conditional.ConditionalMatrix.freq_matrix">
+<code class="descname">freq_matrix</code><a class="headerlink" href="#sptm.conditional.ConditionalMatrix.freq_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Matrix of floats (conditional probabilities)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sptm.conditional.ConditionalMatrix.labels">
+<code class="descname">labels</code><a class="headerlink" href="#sptm.conditional.ConditionalMatrix.labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of strings, labels for each topic, has to be manually
+labeled</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sptm.conditional.ConditionalMatrix.labeled">
+<code class="descname">labeled</code><a class="headerlink" href="#sptm.conditional.ConditionalMatrix.labeled" title="Permalink to this definition">¶</a></dt>
+<dd><p>freq_matrix with labels</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sptm.conditional.ConditionalMatrix.sorted">
+<code class="descname">sorted</code><a class="headerlink" href="#sptm.conditional.ConditionalMatrix.sorted" title="Permalink to this definition">¶</a></dt>
+<dd><p>freq_matrix with labels and sorted in decending order</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sptm.conditional.ConditionalMatrix.construct_matrix">
+<code class="descname">construct_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/conditional.html#ConditionalMatrix.construct_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.conditional.ConditionalMatrix.construct_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the conditional probabilities</p>
+<p>Construct a simple frequency matrix of each topic (current sentence)
+vs topic (next sentence), Identify the topics with high probabilities
+for each sentence</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal"><span class="pre">Exception</span></code> – Sentence Missing, you can ignore this message</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sptm.conditional.ConditionalMatrix.save">
+<code class="descname">save</code><span class="sig-paren">(</span><em>output_path</em>, <em>matrix</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/conditional.html#ConditionalMatrix.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.conditional.ConditionalMatrix.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save matrix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>output_path</strong> – Location with filename to save matrix</li>
+<li><strong>matrix</strong> – Matrix to save</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal"><span class="pre">IOError</span></code> – Output path does not exist</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sptm.conditional.ConditionalMatrix.sort_and_label">
+<code class="descname">sort_and_label</code><span class="sig-paren">(</span><em>labels_path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/conditional.html#ConditionalMatrix.sort_and_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.conditional.ConditionalMatrix.sort_and_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort and label each value in the matrix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>labels_path</strong> – Path to a labels file</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><code class="xref py py-exc docutils literal"><span class="pre">IOError</span></code> – Labels file not found</li>
+<li><code class="xref py py-exc docutils literal"><span class="pre">Exception</span></code> – Error matching topics and labels, Error sorting
+Conditional Probabilities</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-sptm.inference">
+<span id="sptm-inference-module"></span><h2>sptm.inference module<a class="headerlink" href="#module-sptm.inference" title="Permalink to this headline">¶</a></h2>
+<p>Inferencer functions</p>
+<dl class="class">
+<dt id="sptm.inference.Inferencer">
+<em class="property">class </em><code class="descclassname">sptm.inference.</code><code class="descname">Inferencer</code><span class="sig-paren">(</span><em>model</em>, <em>dictionary</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/inference.html#Inferencer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.inference.Inferencer" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="sptm.inference.Inferencer.infer">
+<code class="descname">infer</code><span class="sig-paren">(</span><em>query</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/inference.html#Inferencer.infer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.inference.Inferencer.infer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run an inference on the query</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>query</strong> (<em>List of reviews</em>) – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-sptm.model">
+<span id="sptm-model-module"></span><h2>sptm.model module<a class="headerlink" href="#module-sptm.model" title="Permalink to this headline">¶</a></h2>
+<p>Adjust, train and optimize Model</p>
+<dl class="class">
+<dt id="sptm.model.Model">
+<em class="property">class </em><code class="descclassname">sptm.model.</code><code class="descname">Model</code><span class="sig-paren">(</span><em>mallet_path</em>, <em>tokens=None</em>, <em>input_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/model.html#Model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.model.Model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adjust, train and optimize LDA model</p>
+<p>This class is responsible for traning the Topic Model using Mallet’s
+LDA which can be found [here](<a class="reference external" href="http://mallet.cs.umass.edu/topics.php">http://mallet.cs.umass.edu/topics.php</a>)</p>
+<dl class="attribute">
+<dt id="sptm.model.Model.mallet_path">
+<code class="descname">mallet_path</code><a class="headerlink" href="#sptm.model.Model.mallet_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to Mallet binary</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sptm.model.Model.tokens">
+<code class="descname">tokens</code><a class="headerlink" href="#sptm.model.Model.tokens" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of lists containing data index number and tokens</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sptm.model.Model.id2word">
+<code class="descname">id2word</code><a class="headerlink" href="#sptm.model.Model.id2word" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary of the Corpus</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sptm.model.Model.corpus">
+<code class="descname">corpus</code><a class="headerlink" href="#sptm.model.Model.corpus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Term Document frequency</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">alpha = Model alpha hyperparameter</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">workers = Number of workers spawned while training the model</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">prefix = prefix</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">optimize_interval = Number of iterations after which to re-evaluate</code></dt>
+<dd><p>hyperparameters</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">iterations = Number of iterations</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">topic_threshold = topic threshold</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">num_topics = Number of topics</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">lda_model_mallet = Gensim Mallet LDA wrapper object</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="sptm.model.Model.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/model.html#Model.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.model.Model.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the id2word dictionary and term document frequency of
+the given tokens</p>
+<p>NOTE: Should be called only after making sure that the tokens
+have been properly read</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal"><span class="pre">Exception</span></code> – self.tokens empty or not in required format</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sptm.model.Model.get_coherence">
+<code class="descname">get_coherence</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/model.html#Model.get_coherence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.model.Model.get_coherence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute Coherence Score of the model</p>
+<p>NOTE: You cannot compute the coherence score of a saved model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Float value</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sptm.model.Model.load">
+<code class="descname">load</code><span class="sig-paren">(</span><em>saved_model</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/model.html#Model.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.model.Model.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a Mallet LDA model previously saved</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>saved_model</strong> – Location to saved model</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal"><span class="pre">IOError</span></code> – File already present or location does not exist</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sptm.model.Model.optimum_topic">
+<code class="descname">optimum_topic</code><span class="sig-paren">(</span><em>start=10</em>, <em>limit=100</em>, <em>step=11</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/model.html#Model.optimum_topic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.model.Model.optimum_topic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute c_v coherence for various number of topics</p>
+<p>if you want to change the parameters of the model while training,
+call Model.params() first as it uses the same parameters.</p>
+<p>NOTE: You cannot compute the coherence score of a saved model.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dictionary</strong> – Gensim dictionary</li>
+<li><strong>corpus</strong> – Gensim corpus</li>
+<li><strong>texts</strong> – List of input texts</li>
+<li><strong>limit</strong> – Max num of topics</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Dictionary of {num_topics, c_v}</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sptm.model.Model.params">
+<code class="descname">params</code><span class="sig-paren">(</span><em>alpha=50</em>, <em>workers=4</em>, <em>prefix=None</em>, <em>optimize_interval=0</em>, <em>iterations=1000</em>, <em>topic_threshold=0.0</em>, <em>num_topics=100</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/model.html#Model.params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.model.Model.params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model parameters</p>
+<p>NOTE: These are the same parameters used while traning models
+for coherence computation. Call this function to re-initialize
+parameter values in that case</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>alpha</strong> – Alpha value (Dirichlet Hyperparameter)</li>
+<li><strong>workers</strong> – Number of threads to spawn to parallel traning process</li>
+<li><strong>prefix</strong> – prefix</li>
+<li><strong>optimize_interval</strong> – Number of intervals after which to recompute
+hyperparameters</li>
+<li><strong>iterations</strong> – Number of iterations</li>
+<li><strong>topic_threshold</strong> – Topic threshold</li>
+<li><strong>num_topics</strong> – Number of topics</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sptm.model.Model.save">
+<code class="descname">save</code><span class="sig-paren">(</span><em>output_path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/model.html#Model.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.model.Model.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the Mallet lDA model</p>
+<p>Also, save the document_topic distribution, corpus and inferencer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>output_path</strong> – Location with filename to save the LDA model</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal"><span class="pre">IOError</span></code> – Error with output_path / File already exists</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sptm.model.Model.topics">
+<code class="descname">topics</code><span class="sig-paren">(</span><em>num_topics=100</em>, <em>num_words=10</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/model.html#Model.topics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.model.Model.topics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return top &lt;num_words&gt; words for the first &lt;num_topics&gt; topics</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>num_topics</strong> – Number of topics to print</li>
+<li><strong>num_words</strong> – Number of top words to print for each topic</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">List of topics and top words</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sptm.model.Model.train">
+<code class="descname">train</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/model.html#Model.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.model.Model.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train LDA Mallet model using gensim’s Mallet wrapper</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-sptm.postprocess">
+<span id="sptm-postprocess-module"></span><h2>sptm.postprocess module<a class="headerlink" href="#module-sptm.postprocess" title="Permalink to this headline">¶</a></h2>
+<p>Used to graph the Hellingers distance between topic vectors</p>
+<dl class="class">
+<dt id="sptm.postprocess.TopicDistanceMap">
+<em class="property">class </em><code class="descclassname">sptm.postprocess.</code><code class="descname">TopicDistanceMap</code><span class="sig-paren">(</span><em>lda_mallet</em>, <em>label_filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/postprocess.html#TopicDistanceMap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.postprocess.TopicDistanceMap" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="sptm.postprocess.TopicDistanceMap.intertopic_distance">
+<code class="descname">intertopic_distance</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/postprocess.html#TopicDistanceMap.intertopic_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.postprocess.TopicDistanceMap.intertopic_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the Hellinger Distance between all pairwise topic vectors</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sptm.postprocess.TopicDistanceMap.plot_map">
+<code class="descname">plot_map</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/postprocess.html#TopicDistanceMap.plot_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.postprocess.TopicDistanceMap.plot_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the Map</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sptm.postprocess.TopicDistanceMap.save_dist">
+<code class="descname">save_dist</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/postprocess.html#TopicDistanceMap.save_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.postprocess.TopicDistanceMap.save_dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the matrix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>Location with filename to save the topic matrix</em>) – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-sptm.preprocess">
+<span id="sptm-preprocess-module"></span><h2>sptm.preprocess module<a class="headerlink" href="#module-sptm.preprocess" title="Permalink to this headline">¶</a></h2>
+<p>Preprocess the data</p>
+<dl class="class">
+<dt id="sptm.preprocess.Corpus">
+<em class="property">class </em><code class="descclassname">sptm.preprocess.</code><code class="descname">Corpus</code><span class="sig-paren">(</span><em>path=None</em>, <em>raw_review=None</em>, <em>sentences=None</em>, <em>tokens=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/preprocess.html#Corpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.preprocess.Corpus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Corpus object to handle all pre-processing of data</p>
+<p>read_reviews() method assumes data in the file to be in the following
+format:</p>
+<p>&lt;metadata&gt;&lt;/t&gt;…&lt;/t&gt;&lt;data_in_multiple_sentences&gt;</p>
+<p>Data to be preprocessed must be in the last column.</p>
+<dl class="attribute">
+<dt id="sptm.preprocess.Corpus.path">
+<code class="descname">path</code><a class="headerlink" href="#sptm.preprocess.Corpus.path" title="Permalink to this definition">¶</a></dt>
+<dd><p>path to the data file</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sptm.preprocess.Corpus.raw_review">
+<code class="descname">raw_review</code><a class="headerlink" href="#sptm.preprocess.Corpus.raw_review" title="Permalink to this definition">¶</a></dt>
+<dd><p>data read from the file in a list</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sptm.preprocess.Corpus.sentences">
+<code class="descname">sentences</code><a class="headerlink" href="#sptm.preprocess.Corpus.sentences" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of lists containing data number and
+sentence</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sptm.preprocess.Corpus.tokens">
+<code class="descname">tokens</code><a class="headerlink" href="#sptm.preprocess.Corpus.tokens" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of lists of data index number followed by tokenized
+sentence</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sptm.preprocess.Corpus.read_reviews">
+<code class="descname">read_reviews</code><span class="sig-paren">(</span><em>delimiter='\t'</em>, <em>reg='(\\\\u[0-z][0-z][0-z])\\w'</em>, <em>rep=' '</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/preprocess.html#Corpus.read_reviews"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.preprocess.Corpus.read_reviews" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read reviews and store it in a list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>delimiter</strong> – The seperator between data</li>
+<li><strong>reg</strong> – Custom regex to filter</li>
+<li><strong>rep</strong> – String to replace the regex values</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><code class="xref py py-exc docutils literal"><span class="pre">IOError</span></code> – file not found</li>
+<li><code class="xref py py-exc docutils literal"><span class="pre">Exception</span></code> – Data format in the file opened does not follow the
+specified template style</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sptm.preprocess.Corpus.split_sentence">
+<code class="descname">split_sentence</code><span class="sig-paren">(</span><em>min_len=2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/preprocess.html#Corpus.split_sentence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.preprocess.Corpus.split_sentence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split each data index into its individual sentences</p>
+<p>Splits data index at periods.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>min_len</strong> – Minimum length of a sentence above which to include</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sptm.preprocess.Corpus.tokenize_custom">
+<code class="descname">tokenize_custom</code><span class="sig-paren">(</span><em>min_len=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/preprocess.html#Corpus.tokenize_custom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.preprocess.Corpus.tokenize_custom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processes sentences</p>
+<p>Tokenize, ignore tokens that are too small, lemmatize, filter out
+grammar {stop words, symbols, prepositions, numbers etc}</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>min_len</strong> – Minimum length of tokens</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sptm.preprocess.Corpus.tokenize_simple">
+<code class="descname">tokenize_simple</code><span class="sig-paren">(</span><em>deacc=False</em>, <em>min_len=2</em>, <em>max_len=15</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/preprocess.html#Corpus.tokenize_simple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.preprocess.Corpus.tokenize_simple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processes sentences</p>
+<p>Tokenize, ignore tokens that are too small</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>deacc</strong> – Remove accentuation</li>
+<li><strong>min_len</strong> – Minimal length of token in result</li>
+<li><strong>max_len</strong> – Maximum length of token in result</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sptm.preprocess.Corpus.write_processed">
+<code class="descname">write_processed</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/preprocess.html#Corpus.write_processed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.preprocess.Corpus.write_processed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save to file</p>
+<p>Appends tokens to given file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>name</strong> – Name of file</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><code class="xref py py-exc docutils literal"><span class="pre">IOError</span></code> – Path does not exist</li>
+<li><code class="xref py py-exc docutils literal"><span class="pre">Exception</span></code> – self.tokens structure not supported, manually check its
+value</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-sptm.utils">
+<span id="sptm-utils-module"></span><h2>sptm.utils module<a class="headerlink" href="#module-sptm.utils" title="Permalink to this headline">¶</a></h2>
+<p>Utility functions</p>
+<dl class="function">
+<dt id="sptm.utils.force_unicode">
+<code class="descclassname">sptm.utils.</code><code class="descname">force_unicode</code><span class="sig-paren">(</span><em>string</em>, <em>encoding='utf-8'</em>, <em>errors='ignore'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/utils.html#force_unicode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.utils.force_unicode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Force converts a string to unicode object</p>
+<p>Treats bytestrings using the ‘encoding’ codec.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>string</strong> – string to be encoded</li>
+<li><strong>encoding</strong> – encoding type, defaults to <cite>utf-8</cite></li>
+<li><strong>errors</strong> – whether or not to ignore errors, defaults to <cite>ignore</cite></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">unicode object</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code> – string argument left empty</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sptm">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-sptm" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Rochan Avlur Venkat.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
