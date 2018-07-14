@@ -35,7 +35,8 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="sptm 0.1 documentation" href="../index.html"/> 
+    <link rel="top" title="sptm 0.1 documentation" href="../index.html"/>
+        <link rel="prev" title="Welcome to sptm’s documentation!" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -88,21 +89,21 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">sptm package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-sptm.conditional">sptm.conditional module</a></li>
-<li><a class="reference internal" href="#module-sptm.inference">sptm.inference module</a></li>
-<li><a class="reference internal" href="#module-sptm.model">sptm.model module</a></li>
-<li><a class="reference internal" href="#module-sptm.postprocess">sptm.postprocess module</a></li>
-<li><a class="reference internal" href="#module-sptm.preprocess">sptm.preprocess module</a></li>
-<li><a class="reference internal" href="#module-sptm.utils">sptm.utils module</a></li>
-<li><a class="reference internal" href="#module-sptm">Module contents</a></li>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">sptm package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-sptm.conditional">sptm.conditional module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-sptm.inference">sptm.inference module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-sptm.model">sptm.model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-sptm.postprocess">sptm.postprocess module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-sptm.preprocess">sptm.preprocess module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-sptm.utils">sptm.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-sptm">Module contents</a></li>
 </ul>
 </li>
 </ul>
-</div>
+
             
           
         </div>
@@ -304,15 +305,38 @@ Conditional Probabilities</li>
 <dl class="class">
 <dt id="sptm.inference.Inferencer">
 <em class="property">class </em><code class="descclassname">sptm.inference.</code><code class="descname">Inferencer</code><span class="sig-paren">(</span><em>model</em>, <em>dictionary</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/inference.html#Inferencer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.inference.Inferencer" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<dd><p>Inferncer object to compute probability of next sentence given the
+current sentence</p>
+<dl class="attribute">
+<dt id="sptm.inference.Inferencer.model">
+<code class="descname">model</code><a class="headerlink" href="#sptm.inference.Inferencer.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>LDA Mallet model</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sptm.inference.Inferencer.dictionary">
+<code class="descname">dictionary</code><a class="headerlink" href="#sptm.inference.Inferencer.dictionary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary used to train LDA model</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="sptm.inference.Inferencer.infer">
-<code class="descname">infer</code><span class="sig-paren">(</span><em>query</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/inference.html#Inferencer.infer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.inference.Inferencer.infer" title="Permalink to this definition">¶</a></dt>
+<code class="descname">infer</code><span class="sig-paren">(</span><em>query</em>, <em>sentence_ml=2</em>, <em>token_ml=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sptm/inference.html#Inferencer.infer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sptm.inference.Inferencer.infer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run an inference on the query</p>
+<p>NOTE: use the same minimum lengths here as used during preprocessing</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>query</strong> (<em>List of reviews</em>) – </td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>query</strong> – List of reviews</li>
+<li><strong>sentence_ml</strong> – Minimum length of the sentence in words</li>
+<li><strong>token_ml</strong> – Minimum length of the tokens in characters</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">List of topics with their probability</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -760,6 +784,13 @@ value</li>
            </div>
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../index.html" class="btn btn-neutral" title="Welcome to sptm’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
