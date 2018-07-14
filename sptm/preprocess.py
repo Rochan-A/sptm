@@ -1,146 +1,186 @@
 # -*- coding: utf-8 -*-
 
 """
-	This script is to be used to preprocess the data
+    Preprocess the data
 """
 
 #######################################
 
-import spacy, re, logging, gensim, io, sys
-from utils import force_unicode
+import re
+import logging
+import io
+
+import spacy
+import gensim
+
+from sptm.utils import force_unicode
 
 __author__ = "Rochan Avlur Venkat"
 __credits__ = ["Anupam Mediratta"]
 __license__ = "MIT"
-__version__ = "0.1"
+__version__ = "1.0"
 __maintainer__ = "Rochan Avlur Venkat"
 __email__ = "rochan170543@mechyd.ac.in"
 
 #######################################
 
-logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-nlp = spacy.load('en_core_web_sm')
-reload(sys)
-sys.setdefaultencoding('utf8')
+# Setup logging for gensim
+logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', \
+                                                            level=logging.INFO)
+
+# Setup spacy model for custom preprocessing of data used in tokenize_custom()
+NLP = spacy.load('en_core_web_sm')
 
 class Corpus:
+    """Corpus object to handle all pre-processing of data
 
-	def __init__(self, path):
-		self.path = path
-		self.raw_review = []
-		self.sentences = []
-		self.tokens = []
+    read_reviews() method assumes data in the file to be in the following
+    format:
 
-	def read_reviews(self, delimiter='\t', reg=r"(\\u[0-z][0-z][0-z])\w", rep=" "):
-		"""
-		Function to read reviews and store it in a list
+    <metadata></t>...</t><data_in_multiple_sentences>
 
-		Arguments
-		---------
-		delimiter: The seperator between data  
-		reg: Custom regex to filter  
-		rep: String to replace the regex values
+    Data to be preprocessed must be in the last column.
 
-		Return
-		---------
-		None
-		"""
+    Attributes:
+        path: path to the data file
+        raw_review: data read from the file in a list
+        sentences: list of lists containing data number and
+            sentence
+        tokens: list of lists of review number followed by tokenized sentence
+    """
 
-		# Open the file
-		with io.open(self.path, 'rb') as raw:
-			self.raw_review = [x.strip().split(delimiter) for x in raw]
+    def __init__(self, path=None, raw_review=None, sentences=None,\
+                                                                tokens=None):
+        """Inits Corpus with path, raw_review, sentences and tokens if passed
 
-		# Select full review only
-		for i, val in enumerate(self.raw_review):
-			self.raw_review[i] = self.raw_review[i][-1]
-			self.raw_review[i] = re.sub(reg, rep, self.raw_review[i])
+        One can directly pass semi processed data at different stages and use
+        methods provided in the class to complete the preprocessing.
 
-	def splitsentence(self, min_len=2):
-		"""
-		Splits each review into its individual sentences.
+        Args:
+            path: Path to data file
+            raw_review: data in a list
+            sentences: list of lists containing review number and sentences
+            tokens: list of lists of review number followed by tokenized
+                sentence
+        """
+        self.path = path
+        self.raw_review = raw_review if (raw_review is not None) else []
+        self.sentences = sentences if (sentences is not None) else []
+        self.tokens = tokens if (tokens is not None) else []
 
-		Arguments
-		---------
-		min_len: Minimum length of a sentenceo above which to concider it
+    def read_reviews(self, delimiter='\t', reg=r"(\\u[0-z][0-z][0-z])\w",\
+                                                                    rep=" "):
+        """Read reviews and store it in a list
 
-		Return
-		---------
-		None
-		"""
+        Args:
+            delimiter: The seperator between data
+            reg: Custom regex to filter
+            rep: String to replace the regex values
 
-		# Iterate over every unique review
-		for i, val in enumerate(self.raw_review):
-			# Split the sentences
-			sentences = self.raw_review[i].split('.')
+        Raises:
+            IOError: file not found
+            Exception: Data format in the file opened does not follow the
+                specified template style
+        """
 
-			# Append the other sentences to the end of the review_buf
-			for j, val in enumerate(sentences):
-				# Make sure the sentence has more than two words
-				if len(sentences[j]) > min_len:
-					self.sentences.append(sentences[j])
+        # Open the data file
+        try:
+            with io.open(self.path, 'rb') as raw:
+                self.raw_review = [x.strip().split(delimiter) for x in raw]
+        except IOError:
+            raise IOError('File not found')
 
-	def tokenize_simple(self, deacc=False, min_len=2, max_len=15):
-		"""
-		Processes sentences before passing on to train models
+        try:
+            # Select data only
+            for i, val in enumerate(self.raw_review):
+                # Take the last column values
+                self.raw_review[i] = self.raw_review[i][-1]
+                # Run regex
+                self.raw_review[i] = re.sub(reg, rep, self.raw_review[i])
+        except:
+            raise Exception('Data format in the file does not follow template')
 
-		Arguments
-		---------
-		deacc: Remove accentuation  
-		min_len: Minimal length of token in result  
-		max_len: Maximum length of token in result
+    def split_sentence(self, min_len=2):
+        """Split each review into its individual sentences
 
-		Returns
-		---------
-		tokens: tokenized, de-accent and lowercased word list
-		"""
+        Splits review at periods.
 
-		# Simple tokens, de-accent and lowercase processor
-		tokens = []
-		for i, val in enumerate(self.sentences):
-			tokens.append(gensim.utils.simple_preprocess(self.sentences[i], deacc, min_len, max_len))
-		return tokens
+        Args:
+            min_len: Minimum length of a sentence above which to include
+        """
 
-	def tokenize_custom(self, min_len=1):
-		"""
-		Processes sentences before passing on to train models
+        # Iterate over every unique data value
+        for i, val in enumerate(self.raw_review):
+            # Split the sentences
+            sentence = self.raw_review[i].split('.')
 
-		Arguments
-		---------
-		min_len: Minimum length of tokens
+            # Append the other sentences to the end of the self.sentences
+            for j, v in enumerate(sentence):
+                # Make sure the sentence has more than <min_len> words
+                if len(sentence[j]) > min_len:
+                    self.sentences.append([i, sentence[j]])
 
-		Returns
-		---------
-		None
-		"""
+    def tokenize_simple(self, deacc=False, min_len=2, max_len=15):
+        """Processes sentences
 
-		# POS Tagging and filtering sentences
-		for i, val in enumerate(self.sentences):
-			doc = nlp(force_unicode(self.sentences[i]))
-			to = [unicode(i)]
-			for tok in doc:
-				if tok.is_stop != True and tok.pos_ != 'SYM' and \
-					tok.tag_ != 'PRP' and tok.tag_ != 'PRP$' and \
-					tok.pos_ != 'NUM' and tok.dep_ != 'aux' and \
-					tok.dep_ != 'prep' and tok.dep_ != 'det' and \
-					tok.dep_ != 'cc' and len(tok) != min_len:
-					to.append(tok.lemma_)
-			if len(to) > 1:
-				self.tokens.append(to)
+        Tokenize, ignore tokens that are too small
 
-	def write_processed(self, name):
-		"""
-		Function to save reviews in a file buffer.
+        Args:
+            deacc: Remove accentuation
+            min_len: Minimal length of token in result
+            max_len: Maximum length of token in result
+        """
 
-		Arguments
-		---------
-		name: Name of the file to save as
+        # Simple tokens, de-accent and lowercase processor
+        for i, val in enumerate(self.sentences):
+            self.tokens.append([self.sentences[i][0], \
+            gensim.utils.simple_preprocess(self.sentences[i][1], deacc, \
+                                                            min_len, max_len)])
 
-		Return
-		---------
-		None
-		"""
+    def tokenize_custom(self, min_len=1):
+        """Processes sentences
 
-		# Write the preprocessed reviews to a SINGLE file
-		with io.open(name, "a", encoding='utf8') as outfile:
-			for i, val in enumerate(self.tokens):
-				outfile.write(unicode(','.join(self.tokens[i]) + "\n"))
+        Tokenize, ignore tokens that are too small, lemmatize, filter out
+        grammar {stop words, symbols, prepositions, numbers etc}
+
+        Args:
+            min_len: Minimum length of tokens
+        """
+
+        # POS Tagging and filtering sentences
+        for i, val in enumerate(self.sentences):
+            doc = NLP(force_unicode(self.sentences[i][1]))
+            to = [self.sentences[i][0]]
+            for tok in doc:
+                if tok.is_stop != True and tok.pos_ != 'SYM' and \
+                    tok.tag_ != 'PRP' and tok.tag_ != 'PRP$' and \
+                    tok.pos_ != 'NUM' and tok.dep_ != 'aux' and \
+                    tok.dep_ != 'prep' and tok.dep_ != 'det' and \
+                    tok.dep_ != 'cc' and len(tok) != min_len:
+                    to.append(tok.lemma_)
+            if len(to) > 1:
+                self.tokens.append(to)
+
+    def write_processed(self, name):
+        """Save to file
+
+        Appends tokens to given file
+
+        Args:
+            name: Name of file
+
+        Raises:
+            IOError: Path does not exist
+            Exception: self.tokens structure not supported, manually check its
+                value
+        """
+
+        try:
+            # Write the preprocessed reviews to file
+            with io.open(name, "a", encoding='utf8') as outfile:
+                for i, val in enumerate(self.tokens):
+                    outfile.write(unicode(','.join(self.tokens[i]) + "\n"))
+        except IOError:
+            raise IOError('Path does not exist')
+        except Exception:
+            raise Exception('Error while saving file, check self.tokens value')
