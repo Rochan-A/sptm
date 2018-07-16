@@ -75,9 +75,10 @@ class Model:
         if (tokens is not None and input_path is None) or \
                             (tokens is not None and input_path is not None):
             # Use tokens list passed as an argument
+            print('Using tokens passed as argument')
             try:
                 for i, val in enumerate(tokens):
-                    self.tokens.append(tokens[i][-1])
+                    self.tokens.append(tokens[i][1:])
             except:
                 raise Exception("Tokens list does not follow required " + \
                                                                 "structure")
@@ -85,13 +86,14 @@ class Model:
         elif tokens is None and input_path is not None:
 
             # Read the saved tokens file
+            print('Opening tokens file')
             try:
                 with codecs.open(input_path, 'r', encoding='utf8') as F:
                     for row in F:
                         token_in_row = row.split(",")
                         for i, val in enumerate(token_in_row):
                             token_in_row[i] = force_unicode(token_in_row[i])
-                        self.tokens.append(token_in_row[-1])
+                        self.tokens.append(token_in_row[1:])
             except IOError:
                 raise IOError("File not found")
             except:

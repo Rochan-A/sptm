@@ -151,7 +151,7 @@ class Corpus:
         # POS Tagging and filtering sentences
         for i, val in enumerate(self.sentences):
             doc = NLP(force_unicode(self.sentences[i][1]))
-            to = [self.sentences[i][0]]
+            to = [unicode(self.sentences[i][0])]
             for tok in doc:
                 if tok.is_stop != True and tok.pos_ != 'SYM' and \
                     tok.tag_ != 'PRP' and tok.tag_ != 'PRP$' and \
