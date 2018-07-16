@@ -1,4 +1,4 @@
-test/
+test/custom_corpus.csv
 build/
 dist/
 sptm.egg-info/
