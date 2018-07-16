@@ -1,5 +1,5 @@
 .. sptm documentation master file, created by
-   sphinx-quickstart on Sat Jul 14 19:11:19 2018.
+   sphinx-quickstart on Mon Jul 16 14:11:28 2018.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
@@ -16,3 +16,4 @@ Indices and tables
 ==================
 
 * :ref:`genindex`
+* :ref:`modindex`
