@@ -1,0 +1,483 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sptm.model &mdash; sptm 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="sptm 0.1 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> sptm
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../source/sptm.html">sptm package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sptm</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>sptm.model</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sptm.model</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adjust, train and optimize Model</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1">#######################################</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">codecs</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">from</span> <span class="nn">shutil</span> <span class="k">import</span> <span class="n">copy2</span>
+
+<span class="kn">import</span> <span class="nn">gensim.corpora</span> <span class="k">as</span> <span class="nn">corpora</span>
+<span class="kn">import</span> <span class="nn">gensim.models.wrappers</span> <span class="k">as</span> <span class="nn">Wrappers</span>
+<span class="kn">import</span> <span class="nn">gensim.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">gensim.models</span> <span class="k">import</span> <span class="n">CoherenceModel</span>
+
+<span class="kn">from</span> <span class="nn">sptm.utils</span> <span class="k">import</span> <span class="n">force_unicode</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Rochan Avlur Venkat&quot;</span>
+<span class="n">__credits__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Anupam Mediratta&quot;</span><span class="p">]</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;1.0&quot;</span>
+<span class="n">__maintainer__</span> <span class="o">=</span> <span class="s2">&quot;Rochan Avlur Venkat&quot;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s2">&quot;rochan170543@mechyd.ac.in&quot;</span>
+
+<span class="c1">#######################################</span>
+
+<span class="c1"># Setup logging for gensim</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> : </span><span class="si">%(levelname)s</span><span class="s1"> : </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span> \
+                                                        <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Model"><a class="viewcode-back" href="../../source/sptm.html#sptm.model.Model">[docs]</a><span class="k">class</span> <span class="nc">Model</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Adjust, train and optimize LDA model</span>
+
+<span class="sd">    This class is responsible for traning the Topic Model using Mallet&#39;s</span>
+<span class="sd">    LDA which can be found [here](http://mallet.cs.umass.edu/topics.php)</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        mallet_path: Path to Mallet binary</span>
+<span class="sd">        tokens: List of lists containing data index number and tokens</span>
+<span class="sd">        id2word: Dictionary of the Corpus</span>
+<span class="sd">        corpus: Term Document frequency</span>
+<span class="sd">        alpha = Model alpha hyperparameter</span>
+<span class="sd">        workers = Number of workers spawned while training the model</span>
+<span class="sd">        prefix = prefix</span>
+<span class="sd">        optimize_interval = Number of iterations after which to re-evaluate</span>
+<span class="sd">            hyperparameters</span>
+<span class="sd">        iterations = Number of iterations</span>
+<span class="sd">        topic_threshold = topic threshold</span>
+<span class="sd">        num_topics = Number of topics</span>
+<span class="sd">        lda_model_mallet = Gensim Mallet LDA wrapper object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mallet_path</span><span class="p">,</span> <span class="n">tokens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">input_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Inits Model with Mallet path, tokenized data or input path to open</span>
+<span class="sd">        saved tokenized data.</span>
+
+<span class="sd">        NOTE: If both input_path and tokens is given, tokens will always take</span>
+<span class="sd">        higher preference</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mallet_path: Location of Mallet binary</span>
+<span class="sd">            input_path: Location of saved preprocessed tokens file</span>
+<span class="sd">            tokens: tokens of preprocessed data</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            IOError: Tokens file not found or not in specified format</span>
+<span class="sd">            Exception: Not in specified structure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mallet_path</span> <span class="o">=</span> <span class="n">mallet_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">tokens</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">input_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> \
+                            <span class="p">(</span><span class="n">tokens</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">input_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="c1"># Use tokens list passed as an argument</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tokens</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Tokens list does not follow required &quot;</span> <span class="o">+</span> \
+                                                                <span class="s2">&quot;structure&quot;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">tokens</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">input_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># Read the saved tokens file</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">input_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">F</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">F</span><span class="p">:</span>
+                        <span class="n">token_in_row</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">token_in_row</span><span class="p">):</span>
+                            <span class="n">token_in_row</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">force_unicode</span><span class="p">(</span><span class="n">token_in_row</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token_in_row</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;File not found&quot;</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Tokens list does not follow required &quot;</span> <span class="o">+</span> \
+                                                                <span class="s2">&quot;structure&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">tokens</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">input_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Assuming load model from saved file, use Model.load()&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Missing tokens data&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Model.fit"><a class="viewcode-back" href="../../source/sptm.html#sptm.model.Model.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate the id2word dictionary and term document frequency of</span>
+<span class="sd">        the given tokens</span>
+
+<span class="sd">        NOTE: Should be called only after making sure that the tokens</span>
+<span class="sd">        have been properly read</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            Exception: self.tokens empty or not in required format</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Create Dictionary</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">id2word</span> <span class="o">=</span> <span class="n">corpora</span><span class="o">.</span><span class="n">Dictionary</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">)</span>
+                <span class="c1"># Term Document Frequency</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">corpus</span> <span class="o">=</span> \
+                        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">id2word</span><span class="o">.</span><span class="n">doc2bow</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;tokens not compatible&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Model.params"><a class="viewcode-back" href="../../source/sptm.html#sptm.model.Model.params">[docs]</a>    <span class="k">def</span> <span class="nf">params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">(),</span> \
+                    <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">optimize_interval</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> \
+                                        <span class="n">topic_threshold</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">num_topics</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Model parameters</span>
+
+<span class="sd">        NOTE: These are the same parameters used while traning models</span>
+<span class="sd">        for coherence computation. Call this function to re-initialize</span>
+<span class="sd">        parameter values in that case</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            alpha: Alpha value (Dirichlet Hyperparameter)</span>
+<span class="sd">            workers: Number of threads to spawn to parallel traning process</span>
+<span class="sd">            prefix: prefix</span>
+<span class="sd">            optimize_interval: Number of intervals after which to recompute</span>
+<span class="sd">                hyperparameters</span>
+<span class="sd">            iterations: Number of iterations</span>
+<span class="sd">            topic_threshold: Topic threshold</span>
+<span class="sd">            num_topics: Number of topics</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">workers</span> <span class="o">=</span> <span class="n">workers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">prefix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimize_interval</span> <span class="o">=</span> <span class="n">optimize_interval</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span> <span class="o">=</span> <span class="n">iterations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">topic_threshold</span> <span class="o">=</span> <span class="n">topic_threshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_topics</span> <span class="o">=</span> <span class="n">num_topics</span></div>
+
+<div class="viewcode-block" id="Model.train"><a class="viewcode-back" href="../../source/sptm.html#sptm.model.Model.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Train LDA Mallet model using gensim&#39;s Mallet wrapper</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lda_model_mallet</span> <span class="o">=</span> <span class="n">Wrappers</span><span class="o">.</span><span class="n">LdaMallet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mallet_path</span><span class="p">,</span> \
+            <span class="n">corpus</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">corpus</span><span class="p">,</span> <span class="n">num_topics</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_topics</span><span class="p">,</span> \
+            <span class="n">alpha</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="n">id2word</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id2word</span><span class="p">,</span> \
+            <span class="n">workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">workers</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> \
+            <span class="n">optimize_interval</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optimize_interval</span><span class="p">,</span> \
+            <span class="n">iterations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">,</span> \
+            <span class="n">topic_threshold</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">topic_threshold</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Model.topics"><a class="viewcode-back" href="../../source/sptm.html#sptm.model.Model.topics">[docs]</a>    <span class="k">def</span> <span class="nf">topics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_topics</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">num_words</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return top &lt;num_words&gt; words for the first &lt;num_topics&gt; topics</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            num_topics: Number of topics to print</span>
+<span class="sd">            num_words: Number of top words to print for each topic</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of topics and top words</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lda_model_mallet</span><span class="o">.</span><span class="n">print_topics</span><span class="p">(</span><span class="n">num_topics</span><span class="p">,</span> <span class="n">num_words</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Model.save"><a class="viewcode-back" href="../../source/sptm.html#sptm.model.Model.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Save the Mallet lDA model</span>
+
+<span class="sd">        Also, save the document_topic distribution, corpus and inferencer</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            output_path: Location with filename to save the LDA model</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            IOError: Error with output_path / File already exists</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">doctopic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lda_model_mallet</span><span class="o">.</span><span class="n">fdoctopics</span><span class="p">()</span>
+        <span class="n">inferencer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lda_model_mallet</span><span class="o">.</span><span class="n">finferencer</span><span class="p">()</span>
+        <span class="n">corpus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lda_model_mallet</span><span class="o">.</span><span class="n">fcorpusmallet</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">copy2</span><span class="p">(</span><span class="n">doctopic</span><span class="p">,</span> <span class="n">output_path</span> <span class="o">+</span> <span class="s2">&quot;_doctopic&quot;</span><span class="p">)</span>
+            <span class="n">copy2</span><span class="p">(</span><span class="n">inferencer</span><span class="p">,</span> <span class="n">output_path</span> <span class="o">+</span> <span class="s2">&quot;_inferencer&quot;</span><span class="p">)</span>
+            <span class="n">copy2</span><span class="p">(</span><span class="n">corpus</span><span class="p">,</span> <span class="n">output_path</span> <span class="o">+</span> <span class="s2">&quot;_corpus&quot;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;Error with output path / File already exists&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lda_model_mallet</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Model.get_coherence"><a class="viewcode-back" href="../../source/sptm.html#sptm.model.Model.get_coherence">[docs]</a>    <span class="k">def</span> <span class="nf">get_coherence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute Coherence Score of the model</span>
+
+<span class="sd">        NOTE: You cannot compute the coherence score of a saved model</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Float value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">coherence_model_lda</span> <span class="o">=</span> <span class="n">CoherenceModel</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lda_model_mallet</span><span class="p">,</span> \
+                <span class="n">texts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">,</span> <span class="n">dictionary</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id2word</span><span class="p">,</span> \
+                <span class="n">coherence</span><span class="o">=</span><span class="s1">&#39;c_v&#39;</span><span class="p">)</span>
+        <span class="n">coherence_lda</span> <span class="o">=</span> <span class="n">coherence_model_lda</span><span class="o">.</span><span class="n">get_coherence</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">coherence_lda</span></div>
+
+<div class="viewcode-block" id="Model.optimum_topic"><a class="viewcode-back" href="../../source/sptm.html#sptm.model.Model.optimum_topic">[docs]</a>    <span class="k">def</span> <span class="nf">optimum_topic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">11</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute c_v coherence for various number of topics</span>
+
+<span class="sd">        if you want to change the parameters of the model while training,</span>
+<span class="sd">        call Model.params() first as it uses the same parameters.</span>
+
+<span class="sd">        NOTE: You cannot compute the coherence score of a saved model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dictionary: Gensim dictionary</span>
+<span class="sd">            corpus: Gensim corpus</span>
+<span class="sd">            texts: List of input texts</span>
+<span class="sd">            limit: Max num of topics</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary of {num_topics, c_v}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">coherence_values</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">model_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">num_topics</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">Wrappers</span><span class="o">.</span><span class="n">LdaMallet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mallet_path</span><span class="p">,</span> \
+                <span class="n">corpus</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">corpus</span><span class="p">,</span> <span class="n">num_topics</span><span class="o">=</span><span class="n">num_topics</span><span class="p">,</span> \
+                <span class="n">alpha</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="n">id2word</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id2word</span><span class="p">,</span> \
+                <span class="n">workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">workers</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> \
+                <span class="n">optimize_interval</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optimize_interval</span><span class="p">,</span> \
+                <span class="n">iterations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">,</span> \
+                <span class="n">topic_threshold</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">topic_threshold</span><span class="p">)</span>
+            <span class="n">model_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+            <span class="n">coherencemodel</span> <span class="o">=</span> <span class="n">CoherenceModel</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> \
+                <span class="n">texts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">,</span> <span class="n">dictionary</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id2word</span><span class="p">,</span> \
+                <span class="n">coherence</span><span class="o">=</span><span class="s1">&#39;c_v&#39;</span><span class="p">)</span>
+            <span class="n">coherence_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">coherencemodel</span><span class="o">.</span><span class="n">get_coherence</span><span class="p">())</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">cv</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">coherence_values</span><span class="p">):</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;num_topics&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;c_v&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">cv</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span></div>
+
+<div class="viewcode-block" id="Model.load"><a class="viewcode-back" href="../../source/sptm.html#sptm.model.Model.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">saved_model</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load a Mallet LDA model previously saved</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            saved_model: Location to saved model</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            IOError: File already present or location does not exist</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lda_model_mallet</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">SaveLoad</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">saved_model</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;File already present or location does not exist&#39;</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Rochan Avlur Venkat.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
