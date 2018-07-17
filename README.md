@@ -1,4 +1,4 @@
-# sptm: Sentence Topic Prediction using Topic Models
+# sptm: Sentence Topic Prediction using Topic Modeling
 
 ![sptm logo](img/sptm-logo.png)
 
