@@ -1,3 +1,4 @@
 gensim
+sklearn
 spacy
 matplotlib

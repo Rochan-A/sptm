@@ -15,7 +15,7 @@ Use sptm if you need a library that:
 - Construct Conditional Probability Matrix for topics
 - Predict topic of sentences
 
-Read the documentation [here](https://keras.io).
+Read the documentation at [sptm_source]/docs/_build/html/index.html.
 
 sptm is compatible (tested) with: __Python 2.7__.
 
