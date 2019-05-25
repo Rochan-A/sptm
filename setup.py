@@ -8,7 +8,7 @@ with open('requirements.txt') as f:
 
 setuptools.setup(
     name="sptm",
-    version="0.0.1",
+    version="1.1.0",
     author="Rochan Avlur Venkat",
     author_email="rochan170543@mechyd.ac.in",
     description="Sentence Topic Prediction using Topic Modeling",
@@ -18,7 +18,7 @@ setuptools.setup(
     install_requires=install_requires,
     packages=setuptools.find_packages(),
     classifiers=(
-        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ),

@@ -12,7 +12,7 @@ import sptm
 __author__ = "Rochan Avlur Venkat"
 __credits__ = ["Anupam Mediratta"]
 __license__ = "MIT"
-__version__ = "0.1"
+__version__ = "1.1"
 __maintainer__ = "Rochan Avlur Venkat"
 __email__ = "rochan170543@mechyd.ac.in"
 

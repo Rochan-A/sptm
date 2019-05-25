@@ -14,6 +14,7 @@ from shutil import copy2
 import gensim.corpora as corpora
 import gensim.models.wrappers as Wrappers
 import gensim.utils as utils
+from gensim.models.ldamodel import LdaModel
 from gensim.models import CoherenceModel
 
 from sptm.utils import force_unicode
@@ -21,7 +22,7 @@ from sptm.utils import force_unicode
 __author__ = "Rochan Avlur Venkat"
 __credits__ = ["Anupam Mediratta"]
 __license__ = "MIT"
-__version__ = "1.0"
+__version__ = "1.1"
 __maintainer__ = "Rochan Avlur Venkat"
 __email__ = "rochan170543@mechyd.ac.in"
 
@@ -258,5 +259,226 @@ class Model:
         """
         try:
             self.lda_model_mallet = utils.SaveLoad.load(saved_model)
+        except IOError:
+            raise IOError('File already present or location does not exist')
+
+class ModelVanilla:
+    """Adjust, train and optimize LDA model
+
+    This class is responsible for traning the Topic Model using Gensim's
+    LDA.
+
+    Attributes:
+        tokens: List of lists containing data index number and tokens
+        id2word: Dictionary of the Corpus
+        corpus: Term Document frequency
+        alpha = Model alpha hyperparameter
+        workers = Number of workers spawned while training the model
+        prefix = prefix
+        optimize_interval = Number of iterations after which to re-evaluate
+            hyperparameters
+        iterations = Number of iterations
+        topic_threshold = topic threshold
+        num_topics = Number of topics
+        lda_model = Gensim LDA object
+    """
+
+    def __init__(self, mallet_path, tokens=None, input_path=None):
+        """Inits Model, tokenized data or input path to open saved tokenized
+        data.
+
+        NOTE: If both input_path and tokens is given, tokens will always take
+        higher preference
+
+        Args:
+            input_path: Location of saved preprocessed tokens file
+            tokens: tokens of preprocessed data
+
+        Raises:
+            IOError: Tokens file not found or not in specified format
+            Exception: Not in specified structure
+        """
+        self.tokens = []
+
+        if (tokens is not None and input_path is None) or \
+                            (tokens is not None and input_path is not None):
+            # Use tokens list passed as an argument
+            print('Using tokens passed as argument')
+            try:
+                for i, val in enumerate(tokens):
+                    self.tokens.append(tokens[i][1:])
+            except:
+                raise Exception("Tokens list does not follow required " + \
+                                                                "structure")
+
+        elif tokens is None and input_path is not None:
+
+            # Read the saved tokens file
+            print('Opening tokens file')
+            try:
+                with codecs.open(input_path, 'r', encoding='utf8') as F:
+                    for row in F:
+                        token_in_row = row.split(",")
+                        for i, val in enumerate(token_in_row):
+                            token_in_row[i] = force_unicode(token_in_row[i])
+                        self.tokens.append(token_in_row[1:])
+            except IOError:
+                raise IOError("File not found")
+            except:
+                raise Exception("Tokens list does not follow required " + \
+                                                                "structure")
+        elif tokens is None and input_path is None:
+            print("Assuming load model from saved file, use Model.load()")
+        else:
+            print("Missing tokens data")
+
+    def fit(self):
+        """Generate the id2word dictionary and term document frequency of
+        the given tokens
+
+        NOTE: Should be called only after making sure that the tokens
+        have been properly read
+
+        Raises:
+            Exception: self.tokens empty or not in required format
+        """
+        try:
+                # Create Dictionary
+                self.id2word = corpora.Dictionary(self.tokens)
+                # Term Document Frequency
+                self.corpus = \
+                        [self.id2word.doc2bow(text) for text in self.tokens]
+        except:
+            raise Exception('tokens not compatible')
+
+    def params(self, alpha='symmetric', num_topics=100, distributed=False, \
+                    chunksize=2000, passes=1, update_every=1, iterations=50):
+        """Model parameters
+
+        NOTE: These are the same parameters used while traning models
+        for coherence computation. Call this function to re-initialize
+        parameter values in that case
+
+        Args:
+            alpha: Can be set to an 1D array of length equal to the number of
+            expected topics that expresses our a-priori belief for the each
+            topics’ probability. Alternatively default prior selecting
+            strategies can be employed by supplying a string:
+
+                ’asymmetric’: Uses a fixed normalized asymmetric prior
+                    of 1.0 / topicno.
+                ’auto’: Learns an asymmetric prior from the corpus
+                    (not available if distributed==True).
+            num_topics: Number of topics
+            distributed: Whether distributed computing should be used to
+                accelerate training.
+            chunksize: Number of documents to be used in each training chunk.
+            passes: Number of passes through the corpus during training.
+            update_every: Number of documents to be iterated through for each
+                update. Set to 0 for batch learning, > 1 for online iterative
+                learning.
+            iterations: Number of iterations
+        """
+        self.alpha = alpha
+        self.num_topics = num_topics
+        self.distributed = distributed
+        self.chunksize = chunksize
+        self.passes = passes
+        self.update_every = update_every
+        self.iterations = iterations
+
+    def train(self):
+        """Train LDA model using gensim's LDA object
+        """
+        self.lda_model = LdaModel(corpus=self.corpus, \
+                        num_topics=self.num_topics, alpha=self.alpha, \
+                        id2word=self.id2word, distributed=self.distributed, \
+                        chunksize=self.chunksize, passes=self.passes, \
+                        update_every=self.update_every, \
+                                                iterations=self.iterations)
+
+    def topics(self, num_topics=100, num_words=10):
+        """Return top <num_words> words for the first <num_topics> topics
+
+        Args:
+            num_topics: Number of topics to print
+            num_words: Number of top words to print for each topic
+
+        Returns:
+            List of topics and top words
+        """
+        return self.lda_model.print_topics(num_topics, num_words)
+
+    def save(self, output_path):
+        """Save the lDA model
+
+        Args:
+            output_path: Location with filename to save the LDA model
+        Raises:
+            IOError: Error with output_path / File already exists
+        """
+        self.lda_model.save(output_path)
+
+    def get_coherence(self):
+        """Compute Coherence Score of the model
+
+        NOTE: You cannot compute the coherence score of a saved model
+
+        Returns:
+            Float value
+        """
+        coherence_model_lda = CoherenceModel(model=self.lda_model, \
+                texts=self.tokens, dictionary=self.id2word, \
+                coherence='c_v')
+        coherence_lda = coherence_model_lda.get_coherence()
+        return coherence_lda
+
+    def optimum_topic(self, start=10, limit=100, step=11):
+        """Compute c_v coherence for various number of topics
+
+        if you want to change the parameters of the model while training,
+        call Model.params() first as it uses the same parameters.
+
+        NOTE: You cannot compute the coherence score of a saved model.
+
+        Args:
+            start: Starting number of topics
+            limit: Limit number of topics
+            step: Step size
+
+        Returns:
+            Dictionary of {num_topics, c_v}
+        """
+        coherence_values = []
+        model_list = []
+        for num_topics in range(start, limit, step):
+            model = LdaModel(corpus=self.corpus, \
+                        num_topics=self.num_topics, alpha=self.alpha, \
+                        id2word=self.id2word, distributed=self.distributed, \
+                        chunksize=self.chunksize, passes=self.passes, \
+                        update_every=self.update_every, \
+                                                iterations=self.iterations)
+            model_list.append(model)
+            coherencemodel = CoherenceModel(model=model, \
+                texts=self.tokens, dictionary=self.id2word, \
+                coherence='c_v')
+            coherence_values.append(coherencemodel.get_coherence())
+        x = range(start, limit, step)
+        out = dict()
+        for m, cv in zip(x, coherence_values):
+            out["num_topics"] = m
+            out["c_v"] = round(cv, 4)
+        return out
+
+    def load(self, saved_model):
+        """Load a LDA model previously saved
+
+        Args:
+            saved_model: Location to saved model
+        Raises:
+            IOError: File already present or location does not exist
+        """
+        try:
+            self.lda_model = utils.SaveLoad.load(saved_model)
         except IOError:
             raise IOError('File already present or location does not exist')

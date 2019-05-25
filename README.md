@@ -17,7 +17,7 @@ Use sptm if you need a library that:
 
 Read the documentation at [sptm_source]/docs/_build/html/index.html.
 
-sptm is compatible (tested) with: __Python 2.7__.
+sptm is compatible (tested) with: __Python 3.7__.
 
 ------------------
 
@@ -49,13 +49,13 @@ Then, you can install sptm itself. There are two ways to install sptm:
 - **Install sptm from PyPI (recommended):**
 
 ```sh
-sudo pip install sptm
+sudo pip3 install sptm
 ```
 
 If you are using a virtualenv, you may want to avoid using sudo:
 
 ```sh
-pip install sptm
+pip3 install sptm
 ```
 
 - **Alternatively: install sptm from the GitHub source:**
@@ -69,7 +69,7 @@ git clone https://github.com/Rochan-A/sptm.git
  Then, `cd` to the sptm folder and run the install command:
 ```sh
 cd sptm
-sudo python setup.py install
+sudo python3 setup.py install
 ```
 
 - **NOTE: You will need to specifically download spacy's **en_core_web_sm** model.**
@@ -79,7 +79,7 @@ This step needs to be done irrespective the method of installation.
 You can do that by running:
 
 ```sh
-python -m spacy download en_core_web_sm
+python3 -m spacy download en_core_web_sm
 ```
 ------------------
 
