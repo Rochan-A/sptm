@@ -8,7 +8,7 @@ with open('requirements.txt') as f:
 
 setuptools.setup(
     name="sptm",
-    version="1.1.0",
+    version="1.1.1",
     author="Rochan Avlur Venkat",
     author_email="rochan170543@mechyd.ac.in",
     description="Sentence Topic Prediction using Topic Modeling",

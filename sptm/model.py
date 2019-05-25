@@ -22,7 +22,7 @@ from sptm.utils import force_unicode
 __author__ = "Rochan Avlur Venkat"
 __credits__ = ["Anupam Mediratta"]
 __license__ = "MIT"
-__version__ = "1.1"
+__version__ = "1.1.1"
 __maintainer__ = "Rochan Avlur Venkat"
 __email__ = "rochan170543@mechyd.ac.in"
 
@@ -283,7 +283,7 @@ class ModelVanilla:
         lda_model = Gensim LDA object
     """
 
-    def __init__(self, mallet_path, tokens=None, input_path=None):
+    def __init__(self, tokens=None, input_path=None):
         """Inits Model, tokenized data or input path to open saved tokenized
         data.
 
